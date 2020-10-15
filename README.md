@@ -1,1 +1,1 @@
-.resources/README.md
+resources/README.md
