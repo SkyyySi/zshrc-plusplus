@@ -9,6 +9,10 @@
 # (via 'ln -s /path/to/zshrc/zshrc ~/.zshrc' (or '~/.zshrc.local') ) so that you can simply
 # update it by cd-ing into the downloaded folder and typing 'git pull'.
 
+#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#
+# Below are the settings you can savely edit.                                       #
+#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#
+
 ### Plugins ###
 plugins=(
 	colorvars
@@ -18,28 +22,44 @@ plugins=(
 	zsh-syntax-highlighting
 )
 
-### Some default settings ###
+# Plugin settings
+COLORVARS_SHOW_COLOR_TEST_BLOCK=true          # Shows a test block on shell start. It does not matter what you put in there, comment/remove to disable.
 
-COLORVARS_SHOW_COLOR_TEST_BLOCK=true
+ZSH_AUTOSUGGEST_STRATEGY=(history completion) # First look for matches in the history file, then zsh completions.
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE="pacman *"  # This will prevent it from loading the entire package database every time you type something like 'pacman -S '.
+ZSH_AUTOSUGGEST_USE_ASYNC=true                # Like COLORVARS_..., it does not matter what you put in there, comment/remove to disable.
+
+### Shell theme ###
+ZSH_THEME="skyyysi-04"
+
+#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#
+# Below are internal settings you should only edit if you know what you're doing.   #
+#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#
+
+### Some default settings ###
 
 export PATH="${HOME}/.local/bin:${HOME}/bin:${PATH}"
 export TERM=xterm-256color
 export EDITOR=nano
 export BROWSER=firefox
 
-#autoload -Uz promptinit && promptinit   # Uncomment this line if 'prompt off' causes an error.
-
-prompt off
+prompt off   # Comment this line if causes an error.
 setopt prompt_subst
 setopt correct
 setopt autocd
 
-### Key bindings ###
-autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search
-bindkey "^[[B" down-line-or-beginning-search
+### History ###
+if [[ ! -w "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history" ]]; then
+	 mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/"
+	 touch "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
+fi
+
+HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
+HISTZISE=10000000
+SAVEHIST=10000000
+
+bindkey "^[[A" history-substring-beginning-search-up
+bindkey "^[[B" history-substring-beginning-search-down
 
 ### External plugins & settings ###
 
@@ -122,39 +142,56 @@ for p in $plugins; do
 	fi
 done
 
-### Prompt ###
-
-# Enable colored output
-autoload -Uz colors && colors
-
-# Color the prompt path diffrently based on if you 
-# have write acces the the current directory or not.
-function PWD_IS_WRITABLE {
-	if [[ -w "${PWD}" ]]; then
-		echo -n "%{$fg_bold[blue]%}"
-	else
-		echo -n "%{$fg_bold[yellow]%}"
-	fi
-}
-
-# Dram the prompt. It's bad and slow.
-# I recommend using powerlevel10k which is
-# both easyer to customize and it is also faster.
-function precmd_prompt {
-PROMPT_LENGTH_SKEL="$USER$HOST$(echo ${PWD} | sed "s/\/home\/$USER/\~/g")$(git_prompt_info)-------------------------"
-PROMPT_LENGTH_SKEL_CALCULATED=$(($COLUMNS-${#PROMPT_LENGTH_SKEL}))
-PROMPT_RIGHT_SIDE() {
-	for f in {0..$PROMPT_LENGTH_SKEL_CALCULATED}; do
-		echo -n $'\u2501'
-	done
-	echo -n " %{$fg_bold[white]%}"'['"%{$fg_bold[yellow]%}%*%{$fg_bold[white]%}"']'"%{$reset_color%} %{$fg_bold[white]%}"$'\u2501'$'\u2513'"%{$reset_color%} "
-}
-PROMPT=" "$'\u250F'$'\u2501'"%{$fg_bold[white]%}"'['"%{$reset_color%}%("'!'".%{$fg_bold[magenta]%}.%{$fg_bold[cyan]%})%n%{$fg_bold[white]%}@%m:"'$(PWD_IS_WRITABLE)'"%~%(?.%{$fg_bold[green]%}.%{$fg_bold[red]%})%#%{$fg_bold[white]%}"']'"%{$reset_color%} "'$(git_prompt_info)'"$(PROMPT_RIGHT_SIDE)
- %{$fg_bold[white]%}"$'\u2517'$'\u2501'$'\u25B6'"%{$reset_color%} "
-RPROMPT="%{$fg_bold[white]%}"$'\u25C0'$'\u2501'$'\u251B'"%{$reset_color%} "
-}
-
-precmd_functions+=(precmd_prompt)
-
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[cyan]%}["
-ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%} "
+# Load the specified theme.
+  if [[ -z $ZSH_THEME ]]; then
+	return
+elif [[ $ZSH_THEME = "none" ]]; then
+	return
+elif [[ -r $HOME/.zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh-theme ]]; then
+	source $HOME/.zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh-theme
+elif [[ -r $HOME/.zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh ]]; then
+	source $HOME/.zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh
+elif [[ -r $HOME/.zsh/themes/$ZSH_THEME.zsh-theme ]]; then
+	source $HOME/.zsh/themes/$ZSH_THEME.zsh-theme
+elif [[ -r $HOME/.zsh/themes/$ZSH_THEME.zsh ]]; then
+	source $HOME/.zsh/themes/$ZSH_THEME.zsh
+elif [[ -r $HOME/.oh-my-zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh-theme ]]; then
+	source $HOME/.oh-my-zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh-theme
+elif [[ -r $HOME/.oh-my-zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh ]]; then
+	source $HOME/.oh-my-zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh
+elif [[ -r $HOME/.oh-my-zsh/themes/$ZSH_THEME.zsh-theme ]]; then
+	source $HOME/.oh-my-zsh/themes/$ZSH_THEME.zsh-theme
+elif [[ -r $HOME/.oh-my-zsh/themes/$ZSH_THEME.zsh ]]; then
+	source $HOME/.oh-my-zsh/themes/$ZSH_THEME.zsh
+elif [[ -r /usr/share/zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh-theme ]]; then
+	source /usr/share/zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh-theme
+elif [[ -r /usr/share/zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh ]]; then
+	source /usr/share/zsh/themes/$ZSH_THEME/$ZSH_THEME.zsh
+elif [[ -r /usr/share/zsh/themes/$ZSH_THEME.zsh-theme ]]; then
+	source /usr/share/zsh/themes/$ZSH_THEME.zsh-theme
+elif [[ -r /usr/share/zsh/themes/$ZSH_THEME.zsh ]]; then
+	source /usr/share/zsh/themes/$ZSH_THEME.zsh
+elif [[ -r /usr/share/zsh-theme-powerlevel10k/$ZSH_THEME.zsh-theme ]]; then
+	source /usr/share/zsh-theme-powerlevel10k/$ZSH_THEME.zsh-theme
+else
+	### Default prompt ###
+	
+	# Enable colored output
+	autoload -Uz colors && colors
+	
+	# Color the prompt path diffrently based on if you 
+	# have write acces the the current directory or not.
+	function PWD_IS_WRITABLE {
+		if [[ -w "${PWD}" ]]; then
+			echo -n "%{$fg_bold[blue]%}"
+		else
+			echo -n "%{$fg_bold[yellow]%}"
+		fi
+	}
+	
+	# Draw the prompt.
+	PROMPT="%("'!'".%{$fg_bold[magenta]%}.%{$fg_bold[cyan]%})%n%{$fg_bold[white]%}@%m:"'$(PWD_IS_WRITABLE)'"%~%(?.%{$fg_bold[green]%}.%{$fg_bold[red]%})%#%{$reset_color%} "'$(git_prompt_info)'"%{$reset_color%}"
+	
+	ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[cyan]%}["
+	ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%} "
+fi
