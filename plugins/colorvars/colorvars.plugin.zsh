@@ -59,8 +59,7 @@ COLOR_BG_WHITE="\e[107m"
 # No color
 COLOR_RESET="\e[0m"
 
-# Show a test pattern when launching
-if [[ -n "$COLORVARS_SHOW_COLOR_TEST_BLOCK" ]]; then
+colortest() {
 	echo " "$'\u250F'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2513'
 	echo " "$'\u2503'" $COLOR_BG_BLACK          $COLOR_FG_DARK_RED"'C'"$COLOR_FG_DARK_GREEN"'o'"$COLOR_FG_DARK_YELLOW"'l'"$COLOR_FG_DARK_BLUE"'o'"$COLOR_FG_LIGHT_MAGENTA"'r'" $COLOR_RESET$COLOR_BG_WHITE$COLOR_FG_BLACK"' Vars'"           $COLOR_RESET "$'\u2503'
 	echo " "$'\u2523'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u252B'
@@ -69,5 +68,9 @@ if [[ -n "$COLORVARS_SHOW_COLOR_TEST_BLOCK" ]]; then
 	echo " "$'\u2523'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u252B'
 	echo " "$'\u2503'" $COLOR_BG_BLACK        $COLOR_BG_DARK_GRAY        $COLOR_BG_LIGTH_GRAY        $COLOR_BG_WHITE        $COLOR_RESET "$'\u2503'
 	echo " "$'\u2517'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u2501'$'\u251B'
-	echo $'\n'
+}
+
+# Show a test pattern when launching
+if [[ -n "$COLORVARS_SHOW_COLOR_TEST_BLOCK" ]]; then
+	colortest
 fi
