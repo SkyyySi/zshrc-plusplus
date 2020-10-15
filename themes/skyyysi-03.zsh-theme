@@ -3,6 +3,7 @@
 autoload -Uz colors && colors
 setopt prompt_subst
 
+# This is based on agnoster. I think it is licensed as MIT?
 prompt_git() {
   (( $+commands[git] )) || return
   if [[ "$(git config --get oh-my-zsh.hide-status 2>/dev/null)" = 1 ]]; then
