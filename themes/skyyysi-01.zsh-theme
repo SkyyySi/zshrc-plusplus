@@ -1,4 +1,7 @@
 #!/bin/zsh
+# This theme is broken and was mainly added here so that I
+# can't loose it. Please don't use this theme. I may, at some
+# point, try to fix it.
 
 autoload -Uz colors && colors
 setopt prompt_subst
