@@ -58,8 +58,8 @@ HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/history"
 HISTZISE=10000000
 SAVEHIST=10000000
 
-bindkey "^[[A" history-substring-beginning-search-up
-bindkey "^[[B" history-substring-beginning-search-down
+bindkey "^[[A" history-substring-search-up
+bindkey "^[[B" history-substring-search-down
 
 ### External plugins & settings ###
 
